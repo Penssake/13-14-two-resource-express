@@ -13,8 +13,10 @@ let apiURL = `http://localhost:${process.env.PORT}`;
 
 let createCharacter = () => {
   return new Character({
-    name: faker.name.findName(),
-    job: faker.name.jobDescriptor(),
+    name: faker.lorem.words(3),
+    job: faker.lorem.words(1),
+    location: faker.lorem.words(1),
+    children: faker.random.number(),
   }).save();
 };
 
@@ -28,7 +30,7 @@ describe('/api/characters', () => {
   afterAll(server.stop);
   afterEach(() => Character.remove({}));
 
-  describe('POST /categories', () => {
+  describe('POST /characters', () => {
     test('200', () => {
       return superagent.post(`${apiURL}/characters`)
         .send({
@@ -54,10 +56,27 @@ describe('/api/characters', () => {
         });
     });
 
-    describe('400', () => {
+    describe('409 due to duplicate', () => {
+      return createCharacter()
+        .then(character => {
+          return superagent.post(`${apiURL}/characters`)
+            .send({
+              name: character.name,
+            });
+        })
+        .then(Promise.reject)
+        .catch(response => {
+          expect(response.status).toEqual(409);
+        });
     });
 
-    describe('400', () => {
+    describe('400 due to no name', () => {
+      return superagent.post(`${apiURL}/characters`)
+        .send({})
+        .then(Promise.reject)
+        .then(response => {
+          expect(response.status).toEqual(400);
+        });
     });
   });
 });//objects work as queries in mongo
