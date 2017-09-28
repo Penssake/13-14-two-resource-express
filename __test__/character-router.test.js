@@ -1,23 +1,24 @@
 'use strict';
 
 process.env.PORT = 7000;
-// process.env.CORS_ORIGIN;
-process.env.MONGOBD_URI = 'mongodb://localhost/testing';
+process.env.CORS_ORIGIN;//assist with browser allowances
+process.env.MONGOBD_URI = 'mongodb://localhost/testing';//mongo test db
 
-const faker = require('faker');
+const faker = require('faker');//faker creates massive amout of fake data. We declare a variable called const with the const keyword. Constants cannot be reassigned.
 const superagent = require('superagent');
-const server = require('../lib/server.js');
+
+const server = require('../lib/server.js');//required the files that character-router.jest.js are dependent on
 const Character = require('../model/Character.js');
 
-let apiURL = `http://localhost:${process.env.PORT}`;
+let apiURL = `http://localhost:${process.env.PORT}`;//ask
 
-let createCharacter = () => {
+let createCharacter = () => { // the createCharacter function creates and saves a character to the db
   return new Character({
-    name: faker.lorem.words(3),
+    name: faker.lorem.words(3),//faker creates fake data
     job: faker.lorem.words(1),
     location: faker.lorem.words(1),
     children: faker.random.number(),
-  }).save();
+  }).save(); //save() saves it to database
 };
 
 let createCharacterMany = (num) => {

@@ -7,7 +7,7 @@ const Character = require('../model/character.js');
 
 const characterRouter = module.exports = new Router();
 
-characterRouter.post('/categories', jsonParser, (request, response, next) => {
+characterRouter.post('/character', jsonParser, (request, response, next) => {
   if(!request.body.name)
     return next(httpErrors(400, 'Character model requires a name'));
 
