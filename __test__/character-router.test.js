@@ -8,9 +8,10 @@ const faker = require('faker');//faker creates massive amout of fake data. We de
 const superagent = require('superagent');
 
 const server = require('../lib/server.js');//required the files that character-router.jest.js are dependent on
-const Character = require('../model/Character.js');
 
-let apiURL = `http://localhost:${process.env.PORT}`;//ask
+const Character = require('../model/character.js');
+
+let apiURL = `http://localhost:${process.env.PORT}`;
 
 let createCharacter = () => { // the createCharacter function creates and saves a character to the db
   return new Character({
@@ -18,15 +19,16 @@ let createCharacter = () => { // the createCharacter function creates and saves 
     job: faker.lorem.words(1),
     location: faker.lorem.words(1),
     children: faker.random.number(),
+    //add timestamp
   }).save(); //save() saves it to database
 };
 
 let createCharacterMany = (num) => {
   console.log(createCharacterMany, num);
-  return Promise.all(new Array (8).fill(0).map(() => createCharacter()));
+  return Promise.all(new Array (num).fill(0).map(() => createCharacter()));
 };
 
-describe('/api/characters', () => {
+describe('/characters', () => {
   beforeAll(server.start);
   afterAll(server.stop);
   afterEach(() => Character.remove({}));
@@ -39,6 +41,7 @@ describe('/api/characters', () => {
           job: 'Profesional Skater',
         })
         .then(response => {
+          console.log(response);
           expect(response.status).toEqual(200);
           expect(response.body._id).toBeTruthy();
           expect(response.body.name).toEqual('Paul Mitchell');
@@ -56,28 +59,5 @@ describe('/api/characters', () => {
             });
         });
     });
-
-    describe('409 due to duplicate', () => {
-      return createCharacter()
-        .then(character => {
-          return superagent.post(`${apiURL}/characters`)
-            .send({
-              name: character.name,
-            });
-        })
-        .then(Promise.reject)
-        .catch(response => {
-          expect(response.status).toEqual(409);
-        });
-    });
-
-    describe('400 due to no name', () => {
-      return superagent.post(`${apiURL}/characters`)
-        .send({})
-        .then(Promise.reject)
-        .then(response => {
-          expect(response.status).toEqual(400);
-        });
-    });
   });
-});//objects work as queries in mongo
+});
