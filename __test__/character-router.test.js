@@ -6,9 +6,7 @@ process.env.MONGOBD_URI = 'mongodb://localhost/testing';//mongo test db
 
 const faker = require('faker');//faker creates massive amout of fake data. We declare a variable called const with the const keyword. Constants cannot be reassigned.
 const superagent = require('superagent');
-
 const server = require('../lib/server.js');//required the files that character-router.jest.js are dependent on
-
 const Character = require('../model/character.js');
 
 let apiURL = `http://localhost:${process.env.PORT}`;
